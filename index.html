@@ -13,9 +13,9 @@
         }
 
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: grid;
+            place-items: center;
+            height: 100vh;
         }
 
         h1 {
@@ -23,10 +23,26 @@
             font-size: 144px;
             color: rgb(250, 250, 250);
         }
+
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out;
+            animation-fill-mode: forwards;
+        }
+
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
         
     </style>
 </head>
 <body>
-    <h1>HELLOOOOOW!</h1>
+    <h1 id="hellow">HELLOOOOOW!</h1>
 </body>
+<script>
+    window.onload = function() {
+        document.getElementById('hellow').classList.add('fade-in')
+    }
+</script>
 </html>
