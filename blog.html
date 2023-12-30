@@ -298,7 +298,7 @@ SimpleJekyllSearch({
     searchInput: document.getElementById('search-input'),
     resultsContainer: document.getElementById('search-results-container'),
     json: '/search.json',
-    searchResultTemplate: '<div class="search-hit">    <a href="http://localhost:4000{url}">        <h2>{title}</h2>        <p class="search-hit-tags">{date} * {tags}</p>        <p class="search-hit-content">{content}</p>    </a></div>',
+    searchResultTemplate: '<div class="search-hit">    <a href="{url}">        <h2>{title}</h2>        <p class="search-hit-tags">{date} * {tags}</p>        <p class="search-hit-content">{content}</p>    </a></div>',
     noResultsText: '<div id="nothing-found">    <div id="raccoon-img-container">        <img id="question-mark" class="q-mark-anim" style="--delay: .4s" src="/assets/img/other/question-mark.svg" alt="question mark">        <img id="raccoon" src="/assets/img/other/raccoon.svg" alt="raccoon">    </div><img src="/assets/img/other/nothing-found.svg" alt="nothing found"></div>',
     debounceTime: 350,
     templateMiddleware: function(prop, value) {
