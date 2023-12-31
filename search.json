@@ -1,5 +1,12 @@
 [
 {
+"url" : "/blog/duesseldorf.html",
+"date" : "31.12.2023",
+"title" :"Düsseldorf",
+"content" : "I had a few photos on my Pixel phone that I wanted to edit, so it was time to deal with RAW converters. As impressive as the scope of RawTherapee was, I ended up with Darktable. For me, Darktable was more intuitive and allowed me to quickly achieve my desired photo look.",
+"tags" : "photos * personal"
+},
+{
 "url" : "/blog/powershell-obfuscation.html",
 "date" : "02.05.2023",
 "title" :"Powershell Obfuscation",
