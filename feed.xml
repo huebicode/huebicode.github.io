@@ -1,0 +1,648 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://huebicode.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://huebicode.com/" rel="alternate" type="text/html" /><updated>2024-05-19T16:56:18+02:00</updated><id>https://huebicode.com/feed.xml</id><title type="html">huebicode</title><entry><title type="html">Düsseldorf</title><link href="https://huebicode.com/blog/duesseldorf.html" rel="alternate" type="text/html" title="Düsseldorf" /><published>2023-12-31T00:00:00+01:00</published><updated>2023-12-31T00:00:00+01:00</updated><id>https://huebicode.com/blog/duesseldorf</id><content type="html" xml:base="https://huebicode.com/blog/duesseldorf.html"><![CDATA[<p>I had a few photos on my Pixel phone that I wanted to edit, so it was time to deal with RAW converters. As impressive as the scope of <a href="https://rawtherapee.com/">RawTherapee</a> was, I ended up with <a href="https://www.darktable.org/">Darktable</a>. For me, Darktable was more intuitive and allowed me to quickly achieve my desired photo look.</p>
+
+<div class="gallery-container">
+    <div class="gallery">
+        
+        <a href="/assets/img/blog/photos/squirrel.jpg">
+            <img src="/assets/img/blog/photos/squirrel.jpg" alt="squirrel">
+        </a>
+        
+        <a href="/assets/img/blog/photos/eco.jpg">
+            <img src="/assets/img/blog/photos/eco.jpg" alt="eco">
+        </a>
+
+        <a href="/assets/img/blog/photos/ship.jpg">
+            <img src="/assets/img/blog/photos/ship.jpg" alt="ship">
+        </a>
+    </div>
+
+    <div class="gallery">
+        <a href="/assets/img/blog/photos/port.jpg">
+            <img src="/assets/img/blog/photos/port.jpg" alt="port">
+        </a>
+        
+        <a href="/assets/img/blog/photos/uni.jpg">
+            <img src="/assets/img/blog/photos/uni.jpg" alt="uni">
+        </a>
+
+        <a href="/assets/img/blog/photos/castle.jpg">
+            <img src="/assets/img/blog/photos/castle.jpg" alt="castle">
+        </a>
+    </div>
+</div>]]></content><author><name></name></author><category term="photos" /><category term="personal" /><summary type="html"><![CDATA[I had a few photos on my Pixel phone that I wanted to edit, so it was time to deal with RAW converters. As impressive as the scope of RawTherapee was, I ended up with Darktable. For me, Darktable was more intuitive and allowed me to quickly achieve my desired photo look.]]></summary></entry><entry><title type="html">Powershell Obfuscation</title><link href="https://huebicode.com/blog/powershell-obfuscation.html" rel="alternate" type="text/html" title="Powershell Obfuscation" /><published>2023-05-02T00:00:00+02:00</published><updated>2023-05-02T00:00:00+02:00</updated><id>https://huebicode.com/blog/powershell-obfuscation</id><content type="html" xml:base="https://huebicode.com/blog/powershell-obfuscation.html"><![CDATA[<article>
+    
+    <header class="blog-header">
+        <h1 class="blog-post-title">Powershell Obfuscation</h1>
+        <time datetime="2023-05-02">02.05.2023</time>
+    </header>
+
+<h3 id="intro">Intro</h3>
+
+<p>Due to its deep roots on Windows systems and access to .NET libraries, Powershell is a powerful tool for administrators and attackers alike. It offers a wide range of possibilities to write regular and malicious script code and obfuscate it to the point of unreadability and undetectability by antiviruses. Moreover the code can be executed directly in memory, so that no files and further traces are left on the drive.</p>
+
+<p>The using of Powershell allows an attacker initial access to the victim system - for example through phishing attachments - as well as to move laterally on the victim network and inject further malicious code.</p>
+
+<p>So it is not surprising that this tool stands at the top of the attacker tool list. Be it through self-written and obfuscated code or through frameworks, such as Empire and PowerSploit.</p>
+
+<p>In this blog post I will show many of the attacker methods to obfuscate and hide malicious Powershell code and how to detect and analyze it. The shown obfuscation techniques must not stand alone but can also be used in combination.</p>
+
+<h3 id="powershell">Powershell</h3>
+
+<p>Powershell offers a variety of ways to obfuscate the script code. In the following the language-specific features of Powershell are described, that are suitable for script obfuscation.</p>
+
+<h4 id="functionoverwriting">Function Overwriting</h4>
+
+<p>Powershell offers built-in functions (Cmdlets) that can be overridden in the profiles. This way malicious code can be added to a regular Cmdlet, which is executed in the background when the Cmdlet is called.</p>
+
+<p>In the following example the build-in function "Get-ChildItem" is extended through the profile.</p>
+
+<div class="code language-powershell">function Get-ChildItem {
+    Microsoft.PowerShell.Management\Get-ChildItem
+
+    # malicious code...
+    Write-Output "[+] Malicious code executed!"
+}
+
+# PS> Get-ChildItem
+#
+# Directory: C:\Users\Victim\Desktop\Files
+#
+# Mode      LastWriteTime       Length  Name
+# ----      -------------       ------  ----
+# -a----    01.05.2023 13:05    0       file1
+# -a----    01.05.2023 13:05    0       file2
+# -a----    01.05.2023 13:05    0       file3
+#
+# [+] Malicious code executed!
+</div>
+
+<h4 id="aliases">Aliases</h4>
+
+<p>Powershell allows a large number of alternative notations and abbreviations for built-in functions, which can be viewed using the 'Get-Alias' command. Parameters can also be abbreviated as desired, as long as there are no ambiguities (e.g. 'ExecutionPolicy' to 'ep' or 'exe'). All of the commands listed below result in identical output.</p>
+
+<div class="code language-powershell">Write-Output "Malicious code executed!"
+write "Malicious code executed!"
+echo "Malicious code executed!"
+
+# PS> Malicious code executed!
+</div>
+
+<h4 id="calloperators-wildcards">Calloperators, Wildcards</h4>
+
+<p>With the call operators ('&' or '.') a function can be called. In combination with the 'Get-Command' function (abbr. 'gcm'), which enables the command search with the wildcard character '*', a command call can be shortened and thus obfuscated.</p>
+
+<div class="code language-powershell">&(gcm *te-Ou*) "Malicious code executed!"
+
+# PS> Malicious code executed!
+</div>
+
+<h4 id="case-escape-whitespacechars">Case, Escape-, Whitespacecharacters</h4>
+
+<p>There is no distinction between upper and lower case. Spaces are ignored regardless of their length, allowing malicious code to be hidden at the end of a regular command. The backtick '`' is used as an escape character. Unless this is used before a predefined character such as '`n' for a new line or '`t' for a tab, it is also ignored.</p>
+
+<div class="code language-powershell">&("`wR"+ "It`e" + "-o"+"ut`Put") "`Ma`licious` code e`xecuted`!"
+
+# PS> Malicious code executed!
+</div>
+
+<h4 id="net-functions">.NET-Functions</h4>
+
+<p>Through .NET access, the .NET functions can also be addressed instead of native Powershell functions.</p>
+
+<div class="code language-powershell">[System.Console]::WriteLine("Malicious code executed!")
+
+# PS> Malicious code executed!
+</div>
+
+<h4 id="specialchars">Specialcharacters</h4>
+
+<p>Another obfuscation option is to assign special character variables '${}' to integers, which can be incremented through the increment operator '++' and casted to suitable characters. The special variable assignment using '${}' allows the use of special characters (including spaces) as variable identifiers. The cast operator and required Cmdlets - such as 'iex' - can be assembled using the subexpression operator '$()', method resolutions and array index operators.</p>
+
+<p>The following special character command was obfuscated with <a href="https://github.com/danielbohannon/Invoke-Obfuscation">Invoke-Obfuscation</a> by Daniel Bohannon.</p>
+
+<div class="code language-powershell">${~%=}=+$();${~^}=${~%=};${=[}=++${~%=};${+-}=++${~%=};${=-^}=++${~%=};${*]}=++${~%=};${~``}=++${~%=};${)^}=++${~%=};${)}=++${~%=};${$^}=++${~%=};${.]}=++${~%=};${``}="["+"$(@{})"[${)}]+"$(@{})"["${=[}${.]}"]+"$(@{})"["${+-}${~^}"]+"$?"[${=[}]+"]";${~%=}="".("$(@{})"["${=[}${*]}"]+"$(@{})"["${=[}${)^}"]+"$(@{})"[${~^}]+"$(@{})"[${*]}]+"$?"[${=[}]+"$(@{})"[${=-^}]);${~%=}="$(@{})"["${=[}"+"${*]}"]+"$(@{})"[${*]}]+"${~%=}"["${+-}"+"${)}"];.${~%=}("${``}${$^}${)}+${``}${=[}${=[}${*]}+${``}${=[}${~^}${~``}+${``}${=[}${=[}${)^}+${``}${=[}${~^}${=[}+${``}${*]}${~``}+${``}${)}${.]}+${``}${=[}${=[}${)}+${``}${=[}${=[}${)^}+${``}${=[}${=[}${+-}+${``}${=[}${=[}${)}+${``}${=[}${=[}${)^}+${``}${=-^}${+-}+${``}${=-^}${.]}+${``}${)}${)}+${``}${.]}${)}+${``}${=[}${~^}${$^}+${``}${=[}${~^}${~``}+${``}${.]}${.]}+${``}${=[}${~^}${~``}+${``}${=[}${=[}${=[}+${``}${=[}${=[}${)}+${``}${=[}${=[}${~``}+${``}${=-^}${+-}+${``}${.]}${.]}+${``}${=[}${=[}${=[}+${``}${=[}${~^}${~^}+${``}${=[}${~^}${=[}+${``}${=-^}${+-}+${``}${=[}${~^}${=[}+${``}${=[}${+-}${~^}+${``}${=[}${~^}${=[}+${``}${.]}${.]}+${``}${=[}${=[}${)}+${``}${=[}${=[}${)^}+${``}${=[}${~^}${=[}+${``}${=[}${~^}${~^}+${``}${=-^}${=-^}+${``}${=-^}${.]}|${~%=}")
+
+# PS> Malicious code executed!
+</div>
+
+<p>The Powershell code after resolving the special characters:</p>
+
+<div class="code language-powershell">[CHar]87+[CHar]114+[CHar]105+[CHar]116+[CHar]101+[CHar]45+[CHar]79+[CHar]117+[CHar]116+[CHar]112+[CHar]117+[CHar]116+[CHar]32+[CHar]39+[CHar]77+[CHar]97+[CHar]108+[CHar]105+[CHar]99+[CHar]105+[CHar]111+[CHar]117+[CHar]115+[CHar]32+[CHar]99+[CHar]111+[CHar]100+[CHar]101+[CHar]32+[CHar]101+[CHar]120+[CHar]101+[CHar]99+[CHar]117+[CHar]116+[CHar]101+[CHar]100+[CHar]33+[CHar]39|iex
+
+# PS> Malicious code executed!
+</div>
+
+<p>The final code after resolving the byte characters:</p>
+
+<div class="code language-powershell">Write-Output 'Malicious code executed!' | iex
+
+# PS> Malicious code executed!
+</div>
+
+<h3 id="strings">Strings</h3>
+
+<p>In the following common string obfuscation techniques are shown, which can be used with any programming language in this or similar form.</p>
+
+<h4 id="chaining">Chaining</h4>
+
+<p>Characters can be concatenated by '-split', '-join' or the '+' sign.</p>
+
+<div class="code language-powershell">Write-Output ("Malicious" + " " + "code" + " " + "executed!")
+Write-Output ("MaliciousXXXcodeXXXexecuted!" -split "XXX" -join " ")
+
+# PS> Malicious code executed!
+</div>
+
+<h4 id="replacing">Replacing</h4>
+
+<p>Character strings can be exchanged using the '-replace' option.</p>
+
+<div class="code language-powershell">Write-Output ("MaliciousXXXcodeXXXexecuted!" -replace("XXX"," "))
+
+# PS> Malicious code executed!
+</div>
+
+<h4 id="formatoperator">Formatoperator</h4>
+
+<p>The format operator '-f' can be used to rearrange strings based on number order.</p>
+
+<div class="code language-powershell">Write-Output ("{1} {0} {2}" -f "code", "Malicious", "executed!")
+
+# PS> Malicious code executed!
+</div>
+
+<h4 id="reversing">Reversing</h4>
+
+<p>Characters can be reversed via array slicing.</p>
+
+<div class="code language-powershell">Write-Output (-join "!detucexe edoc suoicilaM"[24 .. 0])
+
+# PS> Malicious code executed!
+</div>
+
+<h3 id="encoding">Encoding</h3>
+
+<p>Obfuscation can also be achieved using common encoding methods.</p>
+
+<h4 id="base64">Base64</h4>
+
+<p>The code to be executed can be encoded and passed to Base64. The command encoded in this way can be started via Powershell with the '-EncodedCommand' option.</p>
+
+<div class="code language-powershell">[Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes("Write-Output 'Malicious code executed!'")) | Write-Host
+
+# PS> VwByAGkAdABlAC0ATwB1AHQAcAB1AHQAIAAnAE0AYQBsAGkAYwBpAG8AdQBzACAAYwBvAGQAZQAgAGUAeABlAGMAdQB0AGUAZAAhACcA
+
+powershell -EncodedCommand "VwByAGkAdABlAC0ATwB1AHQAcAB1AHQAIAAnAE0AYQBsAGkAYwBpAG8AdQBzACAAYwBvAGQAZQAgAGUAeABlAGMAdQB0AGUAZAAhACcA"
+
+# PS> Malicious code executed!
+</div>
+
+<h4 id="ascii">ASCII</h4>
+
+<p>ASCII-encoded commands can be executed after a byte conversion, for example via 'Invoke-Expression'.</p>
+
+<div class="code language-powershell">[Text.Encoding]::ASCII.GetBytes("Write-Output 'Malicious code executed!'") | Out-String | ForEach-Object {$_.Replace("`n",",").TrimEnd(",")}
+
+# PS> 87,114,105,116,101,45,79,117,116,112,117,116,32,39,77,97,108,105,99,105,111,117,115,32,99,111,100,101,32,101,120,101,99,117,116,101,100,33,39
+
+Invoke-Expression( -join [char[]](87,114,105,116,101,45,79,117,116,112,117,116,32,39,77,97,108,105,99,105,111,117,115,32,99,111,100,101,32,101,120,101,99,117,116,101,100,33,39))
+
+# PS> Malicious code executed!
+</div>
+
+<h4 id="hex">Hex</h4>
+
+<p>The use of hex encoding is possible in a similar way.</p>
+
+<div class="code language-powershell">[Text.Encoding]::UTF8.GetBytes("Write-Output 'Malicious code executed!'") | ForEach-Object {"'" + $_.ToString("X2") + "'"} | Out-String | ForEach-Object {$_.Replace("`n",",").TrimEnd(",")}
+
+# PS> '57','72','69','74','65','2D','4F','75','74','70','75','74','20','27','4D','61','6C','69','63','69','6F','75','73','20','63','6F','64','65','20','65','78','65','63','75','74','65','64','21','27'
+
+Invoke-Expression( -join ('57','72','69','74','65','2D','4F','75','74','70','75','74','20','27','4D','61','6C','69','63','69','6F','75','73','20','63','6F','64','65','20','65','78','65','63','75','74','65','64','21','27' | ForEach-Object { ([Convert]::ToInt16($_.ToString(),16) -as [char]) }))
+
+# PS> Malicious code executed!
+</div>
+
+<h4 id="octal">Octal</h4>
+
+<p>Similar with octal encoding.</p>
+
+<div class="code language-powershell">[Text.Encoding]::UTF8.GetBytes("Write-Output 'Malicious code executed!'") | ForEach-Object { [Convert]::ToString($_, 8) } | Out-String | ForEach-Object {$_.Replace("`n",",").TrimEnd(",")}
+
+# PS> 127,162,151,164,145,55,117,165,164,160,165,164,40,47,115,141,154,151,143,151,157,165,163,40,143,157,144,145,40,145,170,145,143,165,164,145,144,41,47
+
+Invoke-Expression( -join (127,162,151,164,145,55,117,165,164,160,165,164,40,47,115,141,154,151,143,151,157,165,163,40,143,157,144,145,40,145,170,145,143,165,164,145,144,41,47 | ForEach-Object { ([Convert]::ToInt16($_.ToString(),8) -as [char]) }))
+
+# PS> Malicious code executed!
+</div>
+
+<h4 id="binary">Binary</h4>
+
+<p>And the same with binary encoding.</p>
+
+<div class="code language-powershell">[Text.Encoding]::UTF8.GetBytes("Write-Output 'Malicious code executed!'") | ForEach-Object { [Convert]::ToString($_, 2) } | Out-String | ForEach-Object {$_.Replace("`n",",").TrimEnd(",")}
+
+# PS> 1010111,1110010,1101001,1110100,1100101,101101,1001111,1110101,1110100,1110000,1110101,1110100,100000,100111,1001101,1100001,1101100,1101001,1100011,1101001,1101111,1110101,1110011,100000,1100011,1101111,1100100,1100101,100000,1100101,1111000,1100101,1100011,1110101,1110100,1100101,1100100,100001,100111
+
+Invoke-Expression( -join (1010111,1110010,1101001,1110100,1100101,101101,1001111,1110101,1110100,1110000,1110101,1110100,100000,100111,1001101,1100001,1101100,1101001,1100011,1101001,1101111,1110101,1110011,100000,1100011,1101111,1100100,1100101,100000,1100101,1111000,1100101,1100011,1110101,1110100,1100101,1100100,100001,100111 | ForEach-Object { ([Convert]::ToInt16($_.ToString(),2) -as [char]) }))
+
+# PS> Malicious code executed!
+</div>
+
+<h3 id="encryption">Encryption</h3>
+
+<p>XOR- and SecureString encryption are shown below. Because of the .NET interface all the other .NET encryption algorithms can also be used with Powershell.</p>
+
+<h4 id="xor">XOR</h4>
+
+<p>A command can be obfuscated using XOR and converted back again. The following example performs an XOR operation on each byte of the instruction with the value '0x42'. The bytes can be reconverted with the same value and ASCII casting.</p>
+
+<div class="code language-powershell">[Text.Encoding]::UTF8.GetBytes("Write-Output 'Malicious code executed!'") | ForEach-Object { $_ -bxor 0x42 } | Out-String | ForEach-Object {$_.Replace("`n",",").TrimEnd(",")}
+
+# PS> 21,48,43,54,39,111,13,55,54,50,55,54,98,101,15,35,46,43,33,43,45,55,49,98,33,45,38,39,98,39,58,39,33,55,54,39,38,99,101
+
+Invoke-Expression (-join (21,48,43,54,39,111,13,55,54,50,55,54,98,101,15,35,46,43,33,43,45,55,49,98,33,45,38,39,98,39,58,39,33,55,54,39,38,99,101 | ForEach-Object { [char]($_ -bxor 0x42) }))
+
+# PS> Malicious code executed!
+</div>
+
+<h4 id="securestring">SecureString (AES)</h4>
+
+<p>A command can be AES encrypted by using the SecureString function.</p>
+
+<div class="code language-powershell"># 16, 24 or 32 byte key size
+$key = ([Text.Encoding]::Default.GetBytes("MySecretPassword"))
+
+"Write-Output 'Malicious code executed!'" | ConvertTo-SecureString -AsPlainText -Force | ConvertFrom-SecureString -Key $key
+
+# PS> 01000000d08c9ddf0115d1118c7a00c04fc297eb01000000178e91759fcacf468c330156d58c66bc000000000200000000001066000000010000200000003a3a0b242a307a48d03f6e105db3e209fa3b58021775721753365e5e72bc4f56000000000e8000000002000020000000cf4f9098c27d1aeeb7ba3ecd88252461b812830d3ea934b54e135c270c174a0e500000009e08b1ff1bc319d94ff2611253ecefdc46bb64e5a8a55ed2457cfc516ff6512cdebf9466e52452e4495e1582e2c048097fe6e317ad00692147dd03c8d6db7995028a534a807f22b44d720ebc80d9788a40000000c026f435426f31cdca4c087487fd32ea9ab53498ad8de3bfd2a73b27a59deb46f41c6670f3641a20323573e29ed04d0cc60d07ca3efcec0c6069bcda3d30edbb
+
+Invoke-Expression( ([Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR( ("01000000d08c9ddf0115d1118c7a00c04fc297eb01000000178e91759fcacf468c330156d58c66bc000000000200000000001066000000010000200000003a3a0b242a307a48d03f6e105db3e209fa3b58021775721753365e5e72bc4f56000000000e8000000002000020000000cf4f9098c27d1aeeb7ba3ecd88252461b812830d3ea934b54e135c270c174a0e500000009e08b1ff1bc319d94ff2611253ecefdc46bb64e5a8a55ed2457cfc516ff6512cdebf9466e52452e4495e1582e2c048097fe6e317ad00692147dd03c8d6db7995028a534a807f22b44d720ebc80d9788a40000000c026f435426f31cdca4c087487fd32ea9ab53498ad8de3bfd2a73b27a59deb46f41c6670f3641a20323573e29ed04d0cc60d07ca3efcec0c6069bcda3d30edbb" | ConvertTo-SecureString -Key $key)))))
+
+# PS> Malicious code executed!
+</div>
+
+<h3 id="compression">Compression</h3>
+
+<p>In Powershell the RAW- and GZip compressions are mainly used.</p>
+
+<h4 id="raw">RAW</h4>
+
+<p>The command can be compressed and encoded as Base64. It can be decoded or decompressed in the reverse order.</p>
+
+<div class="code language-powershell">$memory_stream = New-Object IO.MemoryStream
+$compressor = New-Object IO.Compression.DeflateStream($memory_stream, [IO.Compression.CompressionMode]::Compress)
+
+$stream_writer = New-Object IO.StreamWriter($compressor)
+$stream_writer.Write("Write-Output 'Malicious code executed!'")
+$stream_writer.Close()
+
+[System.Convert]::ToBase64String($memory_stream.ToArray())
+
+# PS> Cy/KLEnV9S8tKSgtUVD3TczJTM7MLy1WSM5PSVVIrUhNLi1JTVFUBwA=
+
+Invoke-Expression(New-Object IO.StreamReader((New-Object IO.Compression.DeflateStream([IO.MemoryStream][Convert]::FromBase64String("Cy/KLEnV9S8tKSgtUVD3TczJTM7MLy1WSM5PSVVIrUhNLi1JTVFUBwA="),[IO.Compression.CompressionMode]::Decompress)),[Text.Encoding]::ASCII)).ReadToEnd()
+
+# PS> Malicious code executed!
+</div>
+
+<h4 id="gzip">GZip</h4>
+
+<p>The compression is done the same as in RAW except that the 'GZipStream' function is used.</p>
+
+<div class="code language-powershell">$memory_stream = New-Object IO.MemoryStream
+$compressor = New-Object IO.Compression.GZipStream($memory_stream, [IO.Compression.CompressionMode]::Compress)
+
+$stream_writer = New-Object IO.StreamWriter($compressor)
+$stream_writer.Write("Write-Output 'Malicious code executed!'")
+$stream_writer.Close()
+
+[System.Convert]::ToBase64String($memory_stream.ToArray())
+
+# PS> H4sIAAAAAAAEAAsvyixJ1fUvLSkoLVFQ903MyUzOzC8tVkjOT0lVSK1ITS4tSU1RVAcAcDv1sCcAAAA=
+
+Invoke-Expression(New-Object IO.StreamReader((New-Object IO.Compression.GZipStream([IO.MemoryStream][Convert]::FromBase64String("H4sIAAAAAAAEAAsvyixJ1fUvLSkoLVFQ903MyUzOzC8tVkjOT0lVSK1ITS4tSU1RVAcAcDv1sCcAAAA="),[IO.Compression.CompressionMode]::Decompress)),[Text.Encoding]::ASCII)).ReadToEnd()
+
+# PS> Malicious code executed!
+</div>
+
+<h3 id="persistence">Persistence</h3>
+
+<p>Powershell code can be hidden at operating system level, so that no malicious script files have to be applied to the victim system. This way persistence can be achieved on the system or the anti-virus protection can be bypassed.</p>
+
+<p>The following shows ways in which Powershell code can be applied to the system and executed without dropping files.</p>
+
+<h4 id="profile">Profile</h4>
+
+<p>As described at 'Function Overwriting' the native Powershell functions can be overwritten system- and user-wide using Powershell profiles. This way malicious code can be executed automatically as soon as Powershell is started. An automated start of Powershell in the background can be forced via the Task Scheduler or WMI for example.</p>
+
+<p>The following code was saved in the user profile file, which is always executed automatically when Powershell is started.</p>
+
+<div class="code language-powershell"># Microsoft.PowerShell_profile.ps1
+Write-Output "Malicious code automatically executed from: $($PSCommandPath)"
+
+# PS> Malicious code automatically executed from: C:\Users\Victim\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
+</div>
+
+<h4 id="scheduler">Task Scheduler</h4>
+
+<p>Powershell code can be persisted and executed from the Task Scheduler. In the following a Powershell window with the output listed below is displayed every minute.</p>
+
+<div class="code language-powershell">$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-ep bypass -NoExit -c Write-Output 'Malicious code executed every minute!'"
+
+$trigger = New-ScheduledTaskTrigger -Once -At (Get-Date) -RepetitionInterval (New-TimeSpan -Minutes 1)
+
+$principal = New-ScheduledTaskPrincipal -UserId $env:username -LogonType Interactive
+
+Register-ScheduledTask -TaskName "MALICIOUS" -Action $action -Trigger $trigger -Principal $principal
+
+# PS> Malicious code executed every minute!
+</div>
+
+<h4 id="registry">Registry</h4>
+
+<p>Powershell code can also be stored in the Registry. Here the command is first base64-encoded and stored in a newly created registry key 'XXX'. The value can then be read out with Powershell.</p>
+
+<div class="code language-powershell">$reg_val = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes("Write-Output 'Malicious code executed!'"))
+
+New-Item "HKCU:\SOFTWARE" -Name "Malsoft"
+New-ItemProperty "HKCU:\SOFTWARE\Malsoft" -Name "XXX" -Value $reg_val
+
+powershell -EncodedCommand (Get-ItemProperty "HKCU:\SOFTWARE\Malsoft" -Name "XXX").XXX
+
+# PS> Malicious code executed!
+</div>
+
+<h4 id="environmentvariable">Environmentvariable</h4>
+
+<p>The environment variables also offer the possibility to save Powershell code.</p>
+
+<p>In the following example the environment variable 'XXX' is created, where a base64-encoded Powershell command is stored. The command can then be invoked using the environment variable value.</p>
+
+<div class="code language-powershell">$env_var = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes("Write-Output 'Malicious code executed!'"))
+
+[Environment]::SetEnvironmentVariable("XXX", $env_var, [EnvironmentVariableTarget]::User)
+
+powershell -EncodedCommand ([Environment]::GetEnvironmentVariable("XXX"))
+
+# PS> Malicious code executed!
+</div>
+
+<p>Environment variables can also be used in this way to create a Cmdlet or a command from individual characters.</p>
+
+<p>In the following the abbreviation for the Invoke-Expression Cmdlet 'iex' is created of the ComSpec environment variable from the 4th, 26th and 25th character (counted from 0).</p>
+
+<div class="code language-powershell">$env:ComSpec
+# PS> C:\Windows\system32\cmd.exe
+
+&($env:ComSpec[4,26,25]-join'') ("Write-Output 'Malicious code executed!'")
+
+# PS> Malicious code executed!
+</div>
+
+<h4 id="wmi">Windows Management Instrumentation (WMI)</h4>
+
+<p>Windows Management Instrumentation offers the possibility of reacting to specific events using Event Filters, such as logging onto a system, the start of a specific process or the reaching of a specific date and time. This event can then be linked to an Consumeraction, which can be used to execute PowerShell code.</p>
+
+<p>The following code sets an Event Filter, that triggers every minute at second 42. This filter is connected to a 'CommandLineEventConsumer', which executes the obfuscated PowerShell code, which leads to the output via 'msg.exe'. The configuration saved in this way remains also active after a system restart.</p>
+
+<div class="code language-powershell"># Filter
+$filter = Set-WmiInstance -Namespace "root\subscription" 
+-Class "__EventFilter" 
+-Arguments @{
+    Name = "MyEventFilter"
+    EventNameSpace = "root\cimv2"
+    QueryLanguage = "WQL"
+    Query = "SELECT * FROM __InstanceModificationEvent WHERE TargetInstance ISA 'Win32_LocalTime' AND TargetInstance.Second=42"
+}
+
+# Consumer
+$consumer = Set-WmiInstance -Namespace "root\subscription" 
+-Class "CommandLineEventConsumer" 
+-Arguments @{
+    Name = "MyEventConsumer"
+    CommandLineTemplate = "powershell.exe -ExecutionPolicy Bypass
+    -EncodedCommand bQBzAGcALgBlAHgAZQAgACoAIAAnAE0AYQBsAGkAYwBpAG8AdQBzACAAYwBvAGQAZQAgAGUAeABlAGMAdQB0AGUAZAAhACcA"
+}
+
+# Binding
+Set-WmiInstance -Namespace "root\subscription"
+-Class "__FilterToConsumerBinding"
+-Arguments @{
+    Filter = $filter
+    Consumer = $consumer
+}
+</div>
+
+<div class="inline-container">
+    <img src="/assets/img/blog/msg-exe.png" alt="message output">
+</div>
+
+<h4 id="ads">Alternate Data Streams (ADS)</h4>
+
+<p>ADS is an NTFS feature, which allows to append several data streams to a file. The default data stream is stored in the '$DATA' attribute.</p>
+
+<p>In the following a base64-encoded command is written to another stream of a regular file named 'hidden', which then can be executed by getting the contents of this hidden stream.</p>
+
+<div class="code language-powershell">Set-Content '.\RegularFile.txt' -Stream hidden -Value "VwByAGkAdABlAC0ATwB1AHQAcAB1AHQAIAAnAE0AYQBsAGkAYwBpAG8AdQBzACAAYwBvAGQAZQAgAGUAeABlAGMAdQB0AGUAZAAhACcA"
+
+powershell -ec (Get-Content '.\RegularFile.txt' -Stream 'hidden')
+
+# PS> Malicious code executed!
+</div>
+
+<h3 id="tools">Tools</h3>
+
+<p>This section describes some tools to detect and analyze obfuscated Powershell code.</p>
+
+<h4 id="eventlog">Eventlog</h4>
+
+<p>Since Powershell 5 the call to arguments and commands of typical obfuscated scripts - such as 'Bypass', 'FromBase64String', 'DeflateStream' - are automatically logged along with its contents at the warning level in the following event log under event ID 4104.</p>
+
+<div class="code language-text">Microsoft-Windows-PowerShell%4Operational.evtx
+</div>
+
+<div class="inline-container">
+    <img src="/assets/img/blog/powershell_obfs_evt1.png" alt="eventlog output">
+</div>
+
+<p>To get more inside of the logged obfuscated script, it is recommended to turn on 'Script Block Logging' in the Group Policy.</p>
+
+<div class="code language-text">Group Policy > Computer Configuration > Administrative Templates > Windows PowerShell > Turn on PowerShell Script Block Logging
+</div>
+
+<p>By activating 'Script Block Logging' the resolved script block layers are additionally logged at the verbose level under event ID 4104</p>
+
+<div class="inline-container">
+    <img src="/assets/img/blog/powershell_obfs_evt2.png" alt="eventlog output">
+</div>
+
+<p>For an even deeper logging of Powershell scripts the 'Module Logging' and 'PowerShell Transcription' can also be activated in the Group Policy.</p>
+
+<h4 id="revoke-obfuscation">Revoke-Obfuscation</h4>
+
+<p><a href="https://github.com/danielbohannon/Revoke-Obfuscation">Revoke-Obfuscation</a> is a Powershell module by Daniel Bohannon, which is using two main functions 'Get-RvoScriptBlock' and 'Measure-RvoObfuscation'.</p>
+
+<p>The function 'Get-RvoScriptBlock' enables the extraction of local or extern Eventlogs, while the function 'Measure-RvoObfuscation' is trying to classify a Powershell script as obfuscated or not. This function takes whole Powershellscript files or extracted script blocks as input.</p>
+
+<p>In the following example the script blocks of the Powershell Eventlog are extracted through 'Get-RvoScriptBlock' and then analyzed through 'Measure-RvoObfuscation'.</p>
+
+<div class="code language-powershell">$skriptblock = Get-WinEvent Microsoft-Windows-PowerShell/Operational | Get-RvoScriptBlock | Measure-RvoObfuscation -Verbose
+</div>
+
+<p>The output shows the recognized obfuscated scripts and their hash values.</p>
+
+<div class="customcode">...
+<span class="green">[34 of 46] NOT OBFUSCATED ::</span> (34496E64527BF40DEAD53CF193D97E55F3...)
+<span class="green">[35 of 46] NOT OBFUSCATED ::</span> (B5CA27664A1E634B4E551F638FF3A4ACD9...)
+<span class="red">[36 of 46] OBFUSCATED ::</span> (FF19200070919B612CAFDDBC1F03541FAE...)
+<span class="red">[37 of 46] OBFUSCATED ::</span> (25E323F9DA18AC845E1C436538C74A2D82...)
+...
+</div>
+
+<p>The scripts can been viewed over the index (-1) of the previously defined variable.</p>
+
+<div class="code language-powershell">$skript_block[35].Source
+# @{ScriptBlock=.("{0}{2}{1}"-f'seT','item','-') ('vaRI'+'ABLE'+':U'+'7…
+</div>
+
+<h4 id="chainsaw-hayabusa">Chainsaw, Hayabusa</h4>
+
+<p><a href="https://github.com/WithSecureLabs/chainsaw">Chainsaw</a> and <a href="https://github.com/Yamato-Security/hayabusa">Hayabusa</a> are both CLI applications, which are working with Sigma rules to scan one or more Eventlogs. The applications can be executed with the following commands to scan for suspicious Powershell code:</p>
+
+<div class="customcode"><span class="green">chainsaw-2.5.0.exe</span> hunt <span class="purple">".\Microsoft-Windows-PowerShell%4Operational.evtx"</span> -s sigma/ --mapping mappings/sigma-event-logs-all.yml
+</div>
+
+<div class="customcode"><span class="green">hayabusa-2.2.2.exe</span> csv-timeline -f <span class="purple">".\Microsoft-Windows-PowerShell%4Operational.evtx"</span>
+</div>
+
+<p>Besides obfuscation rules, there are several other rules for suspicious Powershell code among others:</p>
+
+<div class="code language-text">Rule                                                Suspicious Script
+----                                                -----------------
+Powershell Token Obfuscation                        obfuscated.ps1
+Change PowerShell Policies to an Insecure Level     obfuscated.ps1
+Malicious PowerShell Keywords                       obfuscated.ps1
+Potential WinAPI Calls Via PowerShell Scripts       obfuscated.ps1
+Suspicious PowerShell Keywords                      obfuscated.ps1
+...
+</div>
+
+<h4 id="thor">THOR</h4>
+
+<p><a href="https://www.nextron-systems.com/thor/">THOR</a> and the free <a href="https://www.nextron-systems.com/thor-lite/">THOR-lite</a> CLI applications are also working with Sigma rules. Furthermore they are using YARA rules, so obfuscated or suspicious Powershell code can be recognized in other files. For example in LNK files, which can contain malicious Powershell code to load further code or files.</p>
+
+<h4 id="psdecode">PSDecode</h4>
+
+<p><a href="https://github.com/R3MRUM/PSDecode">PSDecode</a> is a helpful Powershell module when analyzing obfuscated Powershell code manually. It can recognize and reverse typical obfuscation techniques - like base64- or string obfuscation - so the analyzed code can become much more readable for further analysis.</p>
+
+</article>
+
+<div id="outline-wrapper">
+    <div id="outline">
+        <dl>
+            <dt><a href="#intro">Intro</a></dt>
+
+            <dt><a href="#powershell">Powershell</a></dt>
+            <dd><a href="#functionoverwriting">Function Overwriting</a></dd>
+            <dd><a href="#aliases">Aliases</a></dd>
+            <dd><a href="#calloperators-wildcards">Calloperators, Wildcards</a></dd>
+            <dd><a href="#case-escape-whitespacechars">Case, Escape-, Whitespacechars</a></dd>
+            <dd><a href="#net-functions">.NET-Functions</a></dd>
+            <dd><a href="#specialchars">Specialchars</a></dd>
+
+            <dt><a href="#strings">Strings</a></dt>
+            <dd><a href="#chaining">Chaining</a></dd>
+            <dd><a href="#replacing">Replacing</a></dd>
+            <dd><a href="#formatoperator">Formatoperator</a></dd>
+            <dd><a href="#reversing">Reversing</a></dd>
+
+            <dt><a href="#encoding">Encoding</a></dt>
+            <dd><a href="#base64">Base64</a></dd>
+            <dd><a href="#ascii">ASCII</a></dd>
+            <dd><a href="#hex">Hex</a></dd>
+            <dd><a href="#octal">Octal</a></dd>
+            <dd><a href="#binary">Binary</a></dd>
+
+            <dt><a href="#encryption">Encryption</a></dt>
+            <dd><a href="#xor">XOR</a></dd>
+            <dd><a href="#securestring">SecureString (AES)</a></dd>
+
+            <dt><a href="#compression">Compression</a></dt>
+            <dd><a href="#raw">RAW</a></dd>
+            <dd><a href="#gzip">GZip</a></dd>
+
+            <dt><a href="#persistence">Persistence</a></dt>
+            <dd><a href="#profile">Profile</a></dd>
+            <dd><a href="#scheduler">Task Scheduler</a></dd>
+            <dd><a href="#registry">Registry</a></dd>
+            <dd><a href="#environmentvariable">Environmentvar</a></dd>
+            <dd><a href="#wmi">WMI</a></dd>
+            <dd><a href="#ads">ADS</a></dd>
+
+            <dt><a href="#tools">Tools</a></dt>
+            <dd><a href="#eventlog">Eventlog</a></dd>
+            <dd><a href="#revoke-obfuscation">Revoke-Obfuscation</a></dd>
+            <dd><a href="#chainsaw-hayabusa">Chainsaw, Hayabusa</a></dd>
+            <dd><a href="#thor">THOR</a></dd>
+            <dd><a href="#psdecode">PSDecode</a></dd>
+        </dl>
+    </div>
+</div>]]></content><author><name></name></author><category term="infosec" /><summary type="html"><![CDATA[Powershell Obfuscation 02.05.2023]]></summary></entry><entry><title type="html">Cuckoos Egg</title><link href="https://huebicode.com/blog/cuckoos-egg.html" rel="alternate" type="text/html" title="Cuckoos Egg" /><published>2022-09-03T00:00:00+02:00</published><updated>2022-09-03T00:00:00+02:00</updated><id>https://huebicode.com/blog/cuckoos-egg</id><content type="html" xml:base="https://huebicode.com/blog/cuckoos-egg.html"><![CDATA[<img src="/assets/img/blog/cuckoosegg.jpg" alt="Book">
+
+<p>This book from Cliff Stoll was always at the end of my reading queue. Infosec is a fast paced area and what should I learn from an over 35 year old incident? Actually this book aged very well and is still relevant in this area. It describes basically the beginnings of DFIR.</p>
+
+<p>On the German side the case is better known because of the events surrounding the KGB hacks and the death of the hacker <a href="https://de.wikipedia.org/wiki/Karl_Koch_(Hacker)">Karl Koch</a>, which were made into a movie<sup><a href="#fn-1">1</a></sup> and a book<sup><a href="#fn-2">2</a></sup>.</p>
+
+<footer>***</footer>
+
+<ol>
+    <li id="fn-1">Hans-Christian Schmid: 23 - Nichts ist so wie es scheint. 1998</li>
+    <li id="fn-2">Hans-Christian Schmid, Michael Gutmann: 23 - Die Geschichte des Hackers Karl Koch. Deutscher Taschenbuch-Verlag, München 1999, ISBN 3-423-08477-4</li>
+</ol>
+
+<div class="br-bottom"></div>]]></content><author><name></name></author><category term="books" /><category term="infosec" /><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">This Is How They Tell Me The World Ends</title><link href="https://huebicode.com/blog/this-is-how-they-tell-me-the-world-ends.html" rel="alternate" type="text/html" title="This Is How They Tell Me The World Ends" /><published>2022-07-28T00:00:00+02:00</published><updated>2022-07-28T00:00:00+02:00</updated><id>https://huebicode.com/blog/this-is-how-they-tell-me-the-world-ends</id><content type="html" xml:base="https://huebicode.com/blog/this-is-how-they-tell-me-the-world-ends.html"><![CDATA[<img src="/assets/img/blog/thisishowtheytellme.jpg" alt="Book">
+<p>A well written and well researched book from Nicole Perlroth about the evolution of IT security and IT politics. Provides a good overview in this field. Enjoyed the read.</p>]]></content><author><name></name></author><category term="books" /><category term="infosec" /><summary type="html"><![CDATA[A well written and well researched book from Nicole Perlroth about the evolution of IT security and IT politics. Provides a good overview in this field. Enjoyed the read.]]></summary></entry><entry><title type="html">Jibaro</title><link href="https://huebicode.com/blog/jibaro.html" rel="alternate" type="text/html" title="Jibaro" /><published>2022-05-27T00:00:00+02:00</published><updated>2022-05-27T00:00:00+02:00</updated><id>https://huebicode.com/blog/jibaro</id><content type="html" xml:base="https://huebicode.com/blog/jibaro.html"><![CDATA[<p>Two hunters attracted against their nature by the fascination of the unattainable, allow closeness, wear themselves out against each other to succumb to their urges in the end.</p>
+
+<a href="/assets/img/blog/jibaro1.jpg"><img class="round-border" src="/assets/img/blog/jibaro1.jpg" alt="Jibaro"></a>
+<a href="/assets/img/blog/jibaro2.jpg"><img class="round-border" src="/assets/img/blog/jibaro2.jpg" alt="Jibaro"></a>
+<a href="/assets/img/blog/jibaro3.jpg"><img class="round-border" src="/assets/img/blog/jibaro3.jpg" alt="Jibaro"></a>
+<a href="/assets/img/blog/jibaro4.jpg"><img class="round-border" src="/assets/img/blog/jibaro4.jpg" alt="Jibaro"></a>
+
+<p>An excellent 17 minute animation by Alberto Mielgo, whose work with "The Witness" already stood out with his distinctive style in the first season of the animation series "Love Death + Robots".</p>]]></content><author><name></name></author><category term="films" /><summary type="html"><![CDATA[Two hunters attracted against their nature by the fascination of the unattainable, allow closeness, wear themselves out against each other to succumb to their urges in the end.]]></summary></entry><entry><title type="html">Ukraine War</title><link href="https://huebicode.com/blog/unkraine-war.html" rel="alternate" type="text/html" title="Ukraine War" /><published>2022-03-19T00:00:00+01:00</published><updated>2022-03-19T00:00:00+01:00</updated><id>https://huebicode.com/blog/unkraine-war</id><content type="html" xml:base="https://huebicode.com/blog/unkraine-war.html"><![CDATA[<article class="content-grid full-width" style="background-color: rgb(255,213,0); color: rgb(33,33,33)">
+
+    <div class="content-grid full-width" style="background-color: rgb(0,91,187); padding-top: var(--large-margin);">
+        <img src="/assets/img/blog/ukraine_war_stars.svg" alt="star banner" style="justify-self: center; width: 70%;">
+    </div>
+
+    <header class="blog-header">
+        <h1 class="blog-post-title" style="color: rgb(33, 33, 33); margin-top: var(--large-margin);">Ukraine War</h1>
+        <time datetime="2022-03-19">19.03.2022</time>
+    </header>
+
+    <p>On Feb. 24, 2022, Putin, with the support of the Belarusian regime, invades Ukraine with his troops, plunging Europe into war. My initial fears that Ukraine would quickly fall in the face of Russia's supposed military superiority have not come true. The Ukrainians have been steadfastly resisting the invasion for over three weeks and are bravely defending their country and their freedom.</p>
+
+    <p>I am incredibly glad that especially with the current events in the USA, a real politician is president again, instead of the Trump clown, who blathers about a "brilliant operation" and a "peace mission" and with whom there would certainly not be the military and financial support of the West that there is now for Ukraine.</p>
+
+    <p>Germany's government unfortunately gives a very weak picture so far. As one of the last countries it blocked many sanctions against Russia, such as the SWIFT exclusion or the import of Russian oil and gas, and supplies obsolete equipment to Ukraine. After an impressive speech of the President of Ukraine Selenskyj in the Bundestag and the indirect accusation of Germany's lack of support, the Bundestag silently goes over to the agenda. I am all the more pleased that the rest of the world is showing its support for Ukraine and isolating Russia more and more. Even Russia-friendly China is staying neutral and increasingly sending signals that it does not support this war.</p>
+
+    <p>The Russian regime is doing what it has always done. It spreads lies, makes critics disappear, locks up demonstrators and dreams of old Soviet times. Especially for this war, the letter "Z" is symbolized, like the swastika in the Nazi era. The letter is painted on military vehicles and waved on flags at propaganda events. Every day the Russian military commits war crimes in Ukraine, where fleeing civilians are overrun by tanks and their homes, hospitals and kindergartens are bombed to break the population and its resistance.</p>
+
+    <p>Besides my financial and moral support, I can only hope for a quick end to the war and that Putin and his supporters end up before the International Criminal Court for his crimes after their historic defeat. That Ukraine regains its old sovereignty, together with its old state borders, and that its path into the European Union is prepared as quickly as possible. It has proven, that it is a country that defends the values of democracy and freedom to the utmost. After that, it is only a matter of time until other countries will break away from Russia's coercive influence and follow Ukraine's example.</p>
+
+    <p>Russia itself faces a dark future due to its isolation, similar to North Korea. Whether China will tie itself to another North Korea is questionable, but because of the many Russian resources, it is not unlikely. I can only hope for the sake of the world community that Russia will follow in the near future the example of Ukraine and initiate a democratic process after the overthrow of the dictator Putin, which could bring us much closer to world peace.</p>
+
+    <footer>***</footer>
+</article>]]></content><author><name></name></author><category term="personal" /><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">Hello World!</title><link href="https://huebicode.com/blog/hello-world.html" rel="alternate" type="text/html" title="Hello World!" /><published>2022-01-16T00:00:00+01:00</published><updated>2022-01-16T00:00:00+01:00</updated><id>https://huebicode.com/blog/hello-world</id><content type="html" xml:base="https://huebicode.com/blog/hello-world.html"><![CDATA[<p>Oh, hello! I am Alex, nice to meet you! May I introduce my new website.</p>
+
+<p>It was a long time ago when I first started with HTML. The year was 1999, a time when fidgety glitter GIFs and background music in MIDI format were still en vogue, celebrating the brave new internet world in a loud and colorful way.</p>
+
+<p>Then in 2006 I tried my first walking attempts with a public homepage. This has been offline for a long time, but a digital copy can still be viewed at <a href="https://web.archive.org/web/20071203100353/http://www.hu3bi.de/">archive.org</a>, as the internet never forgets.</p>
+
+<p>It all started with static HTML pages, followed by a “content management system” called WordPress. Nice were the times before “social” networks and influencers. When people maintained a personal website with care, presented their hobbies and got in touch and discussed with like-minded. Without cookie banners, advertising hell and spreading hate (because stupidity could not do HTML in the past). Back then, my hobbies included 2D and 3D graphics, as well as everything related to motorcycles.</p>
+
+<p>At some point, social networks came along, which are still based on the good idea of offering less tech-savvy people a stage to the outside world. Unfortunately, many idiots, who don’t get any attention locally, because they are seen as such, also take advantage of the easy entry. They have shown that they are capable of registering on such platforms and networking with other less intelligent individuals.</p>
+
+<p>And so the Internet is overrun these days by noisy hordes who think they have expertise in all fields. Clowns like Trump are elevated to their kings. Countries split off after votes, making themselves worse off than before. Crude theories, world conspiracies and “own research” are spread, instead of listening to the professionals who have dedicated their whole lives to their subject and build on the knowledge of their countless predecessors. Those professionals who are currently battling waves of idiocy in climate rescue and pandemic response. Crazy world. But if history can do one thing, it’s outlast idiocy. Cheers to the many quiet and reasonable people who do not let themselves be defeated even in difficult times and slowly but steadily move humanity forward!</p>
+
+<p>Well, so be it. Where was I? Oh well, sometime in 2012, I decided to learn programming. Even though I didn’t stick with it with the vehemence I wish I had in hindsight, I can say that I now understand the concept behind it and am ready to take it a step further. And so, it was obvious to combine my passion for graphics and programming, which finally led to this website. First and foremost, I want to publish small, elegant programs for Windows and Linux, which are not overloaded with countless options and so, maybe in their own way, can contribute to making daily life less cumbersome.</p>]]></content><author><name></name></author><category term="personal" /><summary type="html"><![CDATA[Oh, hello! I am Alex, nice to meet you! May I introduce my new website.]]></summary></entry></feed>
