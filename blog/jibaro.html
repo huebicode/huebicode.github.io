@@ -10,6 +10,7 @@
     
 
     
+    <link rel="stylesheet" href="/assets/css/simple-lightbox.css">
     <link type="application/atom+xml" rel="alternate" href="https://huebicode.com/feed.xml" title="huebicode" />
     <!-- Begin Jekyll SEO tag v2.8.0 -->
 <title>Jibaro | huebicode</title>
@@ -97,10 +98,20 @@
 
     <p>Two hunters attracted against their nature by the fascination of the unattainable, allow closeness, wear themselves out against each other to succumb to their urges in the end.</p>
 
-<a href="/assets/img/blog/jibaro1.jpg"><img class="round-border" src="/assets/img/blog/jibaro1.jpg" alt="Jibaro"></a>
-<a href="/assets/img/blog/jibaro2.jpg"><img class="round-border" src="/assets/img/blog/jibaro2.jpg" alt="Jibaro"></a>
-<a href="/assets/img/blog/jibaro3.jpg"><img class="round-border" src="/assets/img/blog/jibaro3.jpg" alt="Jibaro"></a>
-<a href="/assets/img/blog/jibaro4.jpg"><img class="round-border" src="/assets/img/blog/jibaro4.jpg" alt="Jibaro"></a>
+<span class="gallery">
+<a href="/assets/img/blog/jibaro1.jpg">
+    <img src="/assets/img/blog/jibaro1.jpg" class="round-border" alt="Jibaro1">
+</a>
+<a href="/assets/img/blog/jibaro2.jpg">
+    <img src="/assets/img/blog/jibaro2.jpg" class="round-border" alt="Jibaro2">
+</a>
+<a href="/assets/img/blog/jibaro3.jpg">
+    <img src="/assets/img/blog/jibaro3.jpg" class="round-border" alt="Jibaro3">
+</a>
+<a href="/assets/img/blog/jibaro4.jpg">
+    <img src="/assets/img/blog/jibaro4.jpg" class="round-border" alt="Jibaro4">
+</a>
+</span>
 
 <p>An excellent 17 minute animation by Alberto Mielgo, whose work with "The Witness" already stood out with his distinctive style in the first season of the animation series "Love Death + Robots".</p>
 
@@ -134,6 +145,16 @@
 
 
 
+
+
+
+    <script src="/assets/js/simple-lightbox.min.js"></script>
+    <script>
+        new SimpleLightbox('.gallery a', {
+            overlayOpacity: 1,
+            close: false,
+        });
+    </script>
 
 
 </html>

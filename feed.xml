@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://huebicode.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://huebicode.com/" rel="alternate" type="text/html" /><updated>2024-06-08T19:37:16+02:00</updated><id>https://huebicode.com/feed.xml</id><title type="html">huebicode</title><entry><title type="html">Windows Linux</title><link href="https://huebicode.com/blog/linux.html" rel="alternate" type="text/html" title="Windows Linux" /><published>2024-06-07T00:00:00+02:00</published><updated>2024-06-07T00:00:00+02:00</updated><id>https://huebicode.com/blog/linux</id><content type="html" xml:base="https://huebicode.com/blog/linux.html"><![CDATA[<style>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://huebicode.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://huebicode.com/" rel="alternate" type="text/html" /><updated>2024-06-08T21:07:17+02:00</updated><id>https://huebicode.com/feed.xml</id><title type="html">huebicode</title><entry><title type="html">Windows Linux</title><link href="https://huebicode.com/blog/linux.html" rel="alternate" type="text/html" title="Windows Linux" /><published>2024-06-07T00:00:00+02:00</published><updated>2024-06-07T00:00:00+02:00</updated><id>https://huebicode.com/blog/linux</id><content type="html" xml:base="https://huebicode.com/blog/linux.html"><![CDATA[<style>
 a.custom {
     color: rgb(33,33,33);
     border-color: rgb(33,33,33);
@@ -638,10 +638,20 @@ Suspicious PowerShell Keywords                      obfuscated.ps1
 <div class="br-bottom"></div>]]></content><author><name></name></author><category term="books" /><category term="infosec" /><summary type="html"><![CDATA[]]></summary></entry><entry><title type="html">This Is How They Tell Me The World Ends</title><link href="https://huebicode.com/blog/this-is-how-they-tell-me-the-world-ends.html" rel="alternate" type="text/html" title="This Is How They Tell Me The World Ends" /><published>2022-07-28T00:00:00+02:00</published><updated>2022-07-28T00:00:00+02:00</updated><id>https://huebicode.com/blog/this-is-how-they-tell-me-the-world-ends</id><content type="html" xml:base="https://huebicode.com/blog/this-is-how-they-tell-me-the-world-ends.html"><![CDATA[<img src="/assets/img/blog/thisishowtheytellme.jpg" alt="Book">
 <p>A well written and well researched book from Nicole Perlroth about the evolution of IT security and IT politics. Provides a good overview in this field. Enjoyed the read.</p>]]></content><author><name></name></author><category term="books" /><category term="infosec" /><summary type="html"><![CDATA[A well written and well researched book from Nicole Perlroth about the evolution of IT security and IT politics. Provides a good overview in this field. Enjoyed the read.]]></summary></entry><entry><title type="html">Jibaro</title><link href="https://huebicode.com/blog/jibaro.html" rel="alternate" type="text/html" title="Jibaro" /><published>2022-05-27T00:00:00+02:00</published><updated>2022-05-27T00:00:00+02:00</updated><id>https://huebicode.com/blog/jibaro</id><content type="html" xml:base="https://huebicode.com/blog/jibaro.html"><![CDATA[<p>Two hunters attracted against their nature by the fascination of the unattainable, allow closeness, wear themselves out against each other to succumb to their urges in the end.</p>
 
-<a href="/assets/img/blog/jibaro1.jpg"><img class="round-border" src="/assets/img/blog/jibaro1.jpg" alt="Jibaro"></a>
-<a href="/assets/img/blog/jibaro2.jpg"><img class="round-border" src="/assets/img/blog/jibaro2.jpg" alt="Jibaro"></a>
-<a href="/assets/img/blog/jibaro3.jpg"><img class="round-border" src="/assets/img/blog/jibaro3.jpg" alt="Jibaro"></a>
-<a href="/assets/img/blog/jibaro4.jpg"><img class="round-border" src="/assets/img/blog/jibaro4.jpg" alt="Jibaro"></a>
+<span class="gallery">
+<a href="/assets/img/blog/jibaro1.jpg">
+    <img src="/assets/img/blog/jibaro1.jpg" class="round-border" alt="Jibaro1">
+</a>
+<a href="/assets/img/blog/jibaro2.jpg">
+    <img src="/assets/img/blog/jibaro2.jpg" class="round-border" alt="Jibaro2">
+</a>
+<a href="/assets/img/blog/jibaro3.jpg">
+    <img src="/assets/img/blog/jibaro3.jpg" class="round-border" alt="Jibaro3">
+</a>
+<a href="/assets/img/blog/jibaro4.jpg">
+    <img src="/assets/img/blog/jibaro4.jpg" class="round-border" alt="Jibaro4">
+</a>
+</span>
 
 <p>An excellent 17 minute animation by Alberto Mielgo, whose work with "The Witness" already stood out with his distinctive style in the first season of the animation series "Love Death + Robots".</p>]]></content><author><name></name></author><category term="films" /><summary type="html"><![CDATA[Two hunters attracted against their nature by the fascination of the unattainable, allow closeness, wear themselves out against each other to succumb to their urges in the end.]]></summary></entry><entry><title type="html">Ukraine War</title><link href="https://huebicode.com/blog/unkraine-war.html" rel="alternate" type="text/html" title="Ukraine War" /><published>2022-03-19T00:00:00+01:00</published><updated>2022-03-19T00:00:00+01:00</updated><id>https://huebicode.com/blog/unkraine-war</id><content type="html" xml:base="https://huebicode.com/blog/unkraine-war.html"><![CDATA[<article class="content-grid full-width" style="background-color: rgb(255,213,0); color: rgb(33,33,33);">
 
